@@ -1,6 +1,9 @@
+version: '3.8'
+
 services:
   web:
     build: .
+    container_name: ecotri-web
     ports:
       - "8080:80"
     volumes:
@@ -12,10 +15,11 @@ services:
       DB_NAME: gestion_collectes
       DB_USER: root
       DB_PASSWORD: root
-    command: ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+    restart: unless-stopped
 
   db:
     image: mysql:8.0
+    container_name: ecotri-db
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -23,9 +27,15 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./sql/gestion_collectes.sql:/docker-entrypoint-initdb.d/gestion_collectes.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   phpmyadmin:
     image: phpmyadmin:5.2
+    container_name: ecotri-phpmyadmin
     restart: unless-stopped
     ports:
       - "8081:80"
