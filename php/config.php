@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 session_start();
 
-$host = 'localhost';
-$dbname = 'gestion_collectes';
-$username = 'root';
-$password = 'root';
+$host = getenv('DB_HOST') ?: 'db';
+$dbname = getenv('DB_NAME') ?: 'gestion_collectes';
+$username = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASSWORD') ?: 'root';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [

@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - ./php:/var/www/html:cached
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: gestion_collectes
+      DB_USER: root
+      DB_PASSWORD: root
+    command: ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gestion_collectes
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./sql/gestion_collectes.sql:/docker-entrypoint-initdb.d/gestion_collectes.sql:ro
+
+volumes:
+  db_data:
