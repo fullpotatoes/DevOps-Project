@@ -27,14 +27,17 @@ services:
       - ./sql/gestion_collectes.sql:/docker-entrypoint-initdb.d/gestion_collectes.sql:ro
 
   phpmyadmin:
-    image: phpmyadmin/5.2
+    image: phpmyadmin/phpmyadmin:latest
     restart: unless-stopped
     ports:
       - "8081:80"
     environment:
       PMA_HOST: db
+      PMA_PORT: 3306
       PMA_USER: root
       PMA_PASSWORD: root
-      
+    depends_on:
+      - db
+
 volumes:
   db_data:
